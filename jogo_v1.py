@@ -15,15 +15,9 @@ CINZA_ESCURO = (50, 50, 50)
 fonte_titulo = pygame.font.SysFont("comicsansms", 60, bold=True)
 fonte_botao = pygame.font.SysFont("comicsans", 40)
 
-# try:
-#     fundo = pygame.image.load("imagens/fundo_springfield.png")
-#     fundo = pygame.transform.scale(fundo, (LARGURA, ALTURA))
-#     personagem = pygame.image.load("imagens/bart_skate.png")
-# except:
-#     fundo = pygame.Surface((LARGURA, ALTURA))
-#     fundo.fill(AZUL_CEU)
-#     personagem = pygame.Surface((200, 200))
-#     personagem.fill(AMARELO)
+fundo = pygame.image.load("C:/Users/lucas/OneDrive/Insper/Design de Software/Py game/Projeto-Final/Springfield.jpg")
+fundo = pygame.transform.scale(fundo, (LARGURA, ALTURA))
+personagem = pygame.image.load("C:/Users/lucas/OneDrive/Insper/Design de Software/Py game/Projeto-Final/Bart.png")
 
 def desenha_botao(texto, x, y, largura, altura, cor, cor_hover, acao=None):
     mouse = pygame.mouse.get_pos()
@@ -44,10 +38,10 @@ def iniciar_jogo():
 def tela_inicial():
     rodando = True
     while rodando:
-        # TELA.blit(fundo, (0, 0))
-        titulo = fonte_titulo.render("Simpsons Subway Surfers", True, AMARELO)
-        TELA.blit(titulo, ((LARGURA - titulo.get_width()) // 2, 50))
-        # TELA.blit(personagem, (LARGURA//2 - 100, 150))
+        TELA.blit(fundo, (0, 0))
+        titulo = fonte_titulo.render("Subway Simpsons", True, AMARELO)
+        TELA.blit(titulo, ((LARGURA - titulo.get_width()) // 2, 15))
+        TELA.blit(personagem, (500, 150))
         desenha_botao("JOGAR", LARGURA//2 - 100, 450, 200, 60, CINZA_ESCURO, (70, 70, 70), iniciar_jogo)
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
