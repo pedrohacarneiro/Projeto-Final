@@ -28,11 +28,10 @@ def desenha_botao(texto, x, y, largura, altura, cor, cor_clara, acao=None):
     else:
         pygame.draw.rect(TELA, cor, (x, y, largura, altura))
     texto_formatado = fonte_botao.render(texto, True, BRANCO)
-    TELA.blit(texto_formatado, (x + (largura - texto_formatado.get_width()) // 2,
-                                y + (altura - texto_formatado.get_height()) // 2))
+    TELA.blit(texto_formatado, (x + (largura - texto_formatado.get_width()) // 2, y + (altura - texto_formatado.get_height()) // 2))
 
 def iniciar_jogo():
-    print("Jogo iniciado!")
+    print("Jogo iniciado!") #so para funiconar (nao sei porque nao vai sem)
 
 def tela_inicial():
     rodando = True
