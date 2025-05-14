@@ -67,6 +67,9 @@ botaojogar_rect = botaojogar.get_rect(center=(400, 500))
 personagem = pygame.image.load("Bart.png")
 personagem_rect = personagem.get_rect(bottomright=(LARGURA-20, ALTURA))
 
+rosquinha = pygame.image.load("rosquinha.png")
+rosquinha = pygame.transform.scale(rosquinha, (40, 40))
+
 fonte_titulo = pygame.font.SysFont("comicsansms", 60, bold=True)
 titulo = fonte_titulo.render("Subway Simpsons", True, AMARELO)
 titulo_rect = titulo.get_rect(center=(LARGURA / 2, 25))

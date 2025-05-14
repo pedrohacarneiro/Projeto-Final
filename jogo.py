@@ -30,7 +30,7 @@ def main():
     
     # Configurações da janela principal
     TELA = pygame.display.set_mode((LARGURA, ALTURA))
-    pygame.display.set_caption("Simpsons Subway Surfers")
+    pygame.display.set_caption("Subway Simpsons")
     
     # Variáveis de estado
     jogo = True

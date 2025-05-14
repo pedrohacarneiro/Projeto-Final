@@ -71,8 +71,8 @@ class Coin:
         self.x = lane * lane_width + (lane_width - self.width) // 2
         self.y = -self.height
 
-    def draw(self, screen):
-        pygame.draw.ellipse(screen, GOLD, (self.x, self.y, self.width, self.height))
+    def draw(self, screen, rosquinha):
+        screen.blit(rosquinha, (self.x, self.y))
 
     def update(self, speed):
         self.y += speed
@@ -88,7 +88,7 @@ def draw_hud(screen, meters, speed, high_score):
     font = pygame.font.SysFont(None, 36)
     
     # Contador de metros
-    meter_text = font.render(f"Metros: {meters}", True, BLACK)
+    meter_text = font.render(f"Pontuação: {meters}", True, BLACK)
     text_rect = meter_text.get_rect(topleft=(10, 10))
     pygame.draw.rect(screen, YELLOW, (text_rect.x - 5, text_rect.y - 5, text_rect.width + 10, text_rect.height + 10))
     screen.blit(meter_text, (10, 10))
@@ -246,7 +246,7 @@ def tela_jogo(TELA):
         for coin in coins[:]:
             if coin.update(current_obstacle_speed):
                 coins.remove(coin)
-            coin.draw(screen)
+            coin.draw(screen, rosquinha)
 
             # Colisão com moedas
             if (player.x < coin.x + coin.width and
