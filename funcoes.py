@@ -1,27 +1,3 @@
-# import pygame
-# from parametros import *
-
-# def tela_inicial(jogo, TELA,fundo,titulo_rect,personagem,personagem_rect,tela_atual):
-#     TELA.blit(fundo, (0, 0))
-#     TELA.blit(titulo, titulo_rect)
-#     TELA.blit(personagem, personagem_rect)
-#     TELA.blit(botaojogar, botaojogar_rect)
-#     for evento in pygame.event.get():
-#         if evento.type == pygame.QUIT:
-#             jogo = False
-
-#     pygame.display.update()
-
-#     return jogo, tela_atual
-
-# def tela_jogo(TELA):
-#     rodando = True
-#     TELA.fill((255, 255, 255))
-#     pygame.display.update()
-#     for evento in pygame.event.get():
-#         if evento.type == pygame.QUIT:
-#             rodando = False
-#     return rodando, "tela jogo"
 
 import pygame
 import random
@@ -93,17 +69,11 @@ def draw_hud(screen, meters, speed, high_score):
     pygame.draw.rect(screen, YELLOW, (text_rect.x - 5, text_rect.y - 5, text_rect.width + 10, text_rect.height + 10))
     screen.blit(meter_text, (10, 10))
     
-    # Contador de recorde
-    high_score_text = font.render(f"Recorde: {high_score}", True, BLACK)
+    # Contador de velocidade
+    high_score_text = font.render(f"Velocidade: {speed}", True, BLACK)
     high_score_rect = high_score_text.get_rect(topleft=(10, 50))
     pygame.draw.rect(screen, YELLOW, (high_score_rect.x - 5, high_score_rect.y - 5, high_score_rect.width + 10, high_score_rect.height + 10))
     screen.blit(high_score_text, (10, 50))
-    
-    # Contador de velocidade
-    speed_text = font.render(f"Velocidade: {speed}", True, BLACK)
-    speed_rect = speed_text.get_rect(topleft=(10, 90))
-    pygame.draw.rect(screen, YELLOW, (speed_rect.x - 5, speed_rect.y - 5, speed_rect.width + 10, speed_rect.height + 10))
-    screen.blit(speed_text, (10, 90))
 
 def draw_button(screen, text, x, y, width, height, inactive_color, active_color):
     mouse = pygame.mouse.get_pos()
@@ -133,7 +103,7 @@ def game_over_screen(screen, final_meters, high_score):
     screen.blit(game_over_text, game_over_rect)
     
     # Pontuação final
-    score_text = font_medium.render(f"Metros: {final_meters}", True, WHITE)
+    score_text = font_medium.render(f"Pontuação atual: {final_meters}", True, WHITE)
     score_rect = score_text.get_rect(center=(WIDTH/2, HEIGHT/3))
     screen.blit(score_text, score_rect)
     
@@ -145,7 +115,7 @@ def game_over_screen(screen, final_meters, high_score):
     # Botão de reiniciar
     restart = False
     while not restart:
-        restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*2/3, 200, 50, GRAY, WHITE)
+        restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*2/3, 200, 50, GOLD, WHITE)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -180,7 +150,9 @@ def tela_jogo(TELA):
     # Configurações específicas do jogo
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
-    high_score = 0
+    
+    # Usa a variável global high_score
+    global high_score
     
     player = Player()
     obstacles = []
@@ -195,6 +167,13 @@ def tela_jogo(TELA):
     running = True
     while running:
         screen.fill(BLACK)
+
+        # Atualiza o recorde se necessário
+        if meters > high_score:
+            high_score = meters
+
+        # Restante da lógica do jogo...
+        # (Mantido igual ao original, apenas removida a declaração local de high_score)
 
         # Aumento progressivo de velocidade
         if meters >= speed_increase_threshold:
