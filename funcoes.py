@@ -3,6 +3,7 @@ import random
 import sys
 from parametros import *
 
+
 class Player:
     def __init__(self):
         self.width = PLAYER_WIDTH
@@ -150,26 +151,31 @@ def game_over_screen(screen, final_meters, high_score):
     
     return True
 
-def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_rect, botaojogar, botaojogar_rect, tela_atual):
+def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_rect, botaojogar, botaojogar_rect, tela_atual,contador):
     TELA.blit(fundo, (0, 0))
     TELA.blit(titulo, titulo_rect)
     TELA.blit(personagem, personagem_rect)
     TELA.blit(botaojogar, botaojogar_rect)
+
+    if contador==0:
+        pygame.mixer.music.load("inicio.mp3")
+        pygame.mixer.music.play(loops=1)
     
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    
+    contador+=1
     if botaojogar_rect.collidepoint(mouse) and click[0] == 1:
         tela_atual = "tela jogo"
+        contador=0
     
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             jogo = False
 
     pygame.display.update()
-    return jogo, tela_atual
+    return jogo, tela_atual, contador
 
-def tela_jogo(TELA):
+def tela_jogo(TELA, contador):
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     
@@ -184,7 +190,12 @@ def tela_jogo(TELA):
     obstacle_timer = 0
     coin_timer = 0
     meter_timer = 0
-
+    if contador==0:
+        pygame.mixer.music.load("trilha.mp3")
+        pygame.mixer.music.play(loops=1)
+    
+    contador+=1
+    
     running = True
     while running:
         screen.fill(BLACK)
@@ -259,6 +270,7 @@ def tela_jogo(TELA):
                 player.y < obstacle.y + obstacle.height and
                 player.y + player.height > obstacle.y):
                 running = False
+                contador=0
 
         player.draw(screen)
         draw_hud(screen, meters, current_obstacle_speed, high_score)
@@ -267,9 +279,9 @@ def tela_jogo(TELA):
         clock.tick(FPS)
 
     if game_over_screen(screen, meters, high_score):
-        return True, "tela jogo"
+        return True, "tela jogo", contador
     else:
-        return True, "tela inicial"
+        return True, "tela inicial", contador
     
 def carregar_imagem_obstaculo():
     try:

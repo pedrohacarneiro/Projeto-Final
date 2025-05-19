@@ -16,6 +16,7 @@ YELLOW = (255, 255, 0)
 GOLD = (255, 215, 0)
 GRAY = (200, 200, 200)
 DARK_GRAY = (100, 100, 100)
+VERDE_FINAL = (130,202,40)
 
 # Variável global para armazenar o recorde
 high_score = 0
@@ -42,6 +43,7 @@ MIN_OBSTACLE_SPAWN_RATE = 30
 OBSTACLE_INCREASE_SPEED = 17
 COIN_SPAWN_RATE = 100
 FPS = 60
+contador = 0
 
 # Recursos gráficos para a tela inicial
 fundo = pygame.image.load("Springfield.jpg")
