@@ -77,3 +77,16 @@ IMAGENS_CARROS = [
     "carroverde.png",
     "carrovermelho.png"
 ]
+
+# Caminhos das imagens dos fundos
+IMAGENS_FUNDOS = [
+    "fundo1.png",
+    "fundo2.png",
+    "fundo3.png",
+    "fundo4.png",
+    "fundo5.png",
+    "fundo6.png",
+    "fundo7.png",
+    "fundo8.png",
+    "fundo9.png"
+]
