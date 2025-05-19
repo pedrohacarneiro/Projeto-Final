@@ -1,4 +1,3 @@
-
 import pygame
 import random
 import sys
@@ -6,8 +5,8 @@ from parametros import *
 
 class Player:
     def __init__(self):
-        self.width = 50
-        self.height = 80
+        self.width = PLAYER_WIDTH
+        self.height = PLAYER_HEIGHT
         self.x = lane_width * 1 + (lane_width - self.width) // 2
         self.y = player_y
         self.lane = 1
@@ -26,14 +25,33 @@ class Player:
 
 class Obstacle:
     def __init__(self, lane):
-        self.width = 50
-        self.height = 50
         self.lane = lane
+        self.image = carregar_imagem_obstaculo()
+        
+        # Calcula dimensões mantendo proporção
+        img_width, img_height = self.image.get_size()
+        aspect_ratio = img_width / img_height
+        
+        # Define altura fixa e calcula largura proporcional
+        self.height = OBSTACLE_HEIGHT
+        self.width = int(self.height * aspect_ratio)
+        
+        # Ajusta se for muito largo
+        if self.width > lane_width - 20:
+            self.width = lane_width - 20
+            self.height = int(self.width / aspect_ratio)
+        
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.x = lane * lane_width + (lane_width - self.width) // 2
         self.y = -self.height
+        
+        # Cria sombra para efeito visual
+        self.shadow = pygame.Surface((self.width + 10, 15), pygame.SRCALPHA)
+        self.shadow.fill((0, 0, 0, 100))
 
     def draw(self, screen):
-        pygame.draw.rect(screen, RED, (self.x, self.y, self.width, self.height))
+        screen.blit(self.shadow, (self.x - 5, self.y + self.height - 5))
+        screen.blit(self.image, (self.x, self.y))
 
     def update(self, speed):
         self.y += speed
@@ -41,14 +59,14 @@ class Obstacle:
 
 class Coin:
     def __init__(self, lane):
-        self.width = 30
-        self.height = 30
+        self.width = COIN_SIZE
+        self.height = COIN_SIZE
         self.lane = lane
         self.x = lane * lane_width + (lane_width - self.width) // 2
         self.y = -self.height
 
-    def draw(self, screen, rosquinha):
-        screen.blit(rosquinha, (self.x, self.y))
+    def draw(self, screen, coin_img):
+        screen.blit(coin_img, (self.x, self.y))
 
     def update(self, speed):
         self.y += speed
@@ -56,7 +74,7 @@ class Coin:
 
 def is_position_free(lane, objects):
     for obj in objects:
-        if obj.lane == lane:
+        if obj.lane == lane and obj.y > -obj.height:
             return False
     return True
 
@@ -70,10 +88,16 @@ def draw_hud(screen, meters, speed, high_score):
     screen.blit(meter_text, (10, 10))
     
     # Contador de velocidade
-    high_score_text = font.render(f"Velocidade: {speed}", True, BLACK)
-    high_score_rect = high_score_text.get_rect(topleft=(10, 50))
-    pygame.draw.rect(screen, YELLOW, (high_score_rect.x - 5, high_score_rect.y - 5, high_score_rect.width + 10, high_score_rect.height + 10))
-    screen.blit(high_score_text, (10, 50))
+    speed_text = font.render(f"Velocidade: {speed}", True, BLACK)
+    speed_rect = speed_text.get_rect(topleft=(10, 50))
+    pygame.draw.rect(screen, YELLOW, (speed_rect.x - 5, speed_rect.y - 5, speed_rect.width + 10, speed_rect.height + 10))
+    screen.blit(speed_text, (10, 50))
+    
+    # Recorde
+    hs_text = font.render(f"Recorde: {high_score}", True, BLACK)
+    hs_rect = hs_text.get_rect(topleft=(10, 90))
+    pygame.draw.rect(screen, YELLOW, (hs_rect.x - 5, hs_rect.y - 5, hs_rect.width + 10, hs_rect.height + 10))
+    screen.blit(hs_text, (10, 90))
 
 def draw_button(screen, text, x, y, width, height, inactive_color, active_color):
     mouse = pygame.mouse.get_pos()
@@ -97,22 +121,18 @@ def game_over_screen(screen, final_meters, high_score):
     font_large = pygame.font.SysFont(None, 72)
     font_medium = pygame.font.SysFont(None, 48)
     
-    # Texto Game Over
     game_over_text = font_large.render("GAME OVER", True, RED)
     game_over_rect = game_over_text.get_rect(center=(WIDTH/2, HEIGHT/4))
     screen.blit(game_over_text, game_over_rect)
     
-    # Pontuação final
     score_text = font_medium.render(f"Pontuação atual: {final_meters}", True, WHITE)
     score_rect = score_text.get_rect(center=(WIDTH/2, HEIGHT/3))
     screen.blit(score_text, score_rect)
     
-    # Recorde
     high_score_text = font_medium.render(f"Recorde: {high_score}", True, WHITE)
     high_score_rect = high_score_text.get_rect(center=(WIDTH/2, HEIGHT/2.4))
     screen.blit(high_score_text, high_score_rect)
     
-    # Botão de reiniciar
     restart = False
     while not restart:
         restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*2/3, 200, 50, GOLD, WHITE)
@@ -127,7 +147,7 @@ def game_over_screen(screen, final_meters, high_score):
     
     return True
 
-def tela_inicial(jogo, TELA, fundo, titulo_rect, personagem, personagem_rect, tela_atual):
+def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_rect, botaojogar, botaojogar_rect, tela_atual):
     TELA.blit(fundo, (0, 0))
     TELA.blit(titulo, titulo_rect)
     TELA.blit(personagem, personagem_rect)
@@ -147,11 +167,9 @@ def tela_inicial(jogo, TELA, fundo, titulo_rect, personagem, personagem_rect, te
     return jogo, tela_atual
 
 def tela_jogo(TELA):
-    # Configurações específicas do jogo
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     
-    # Usa a variável global high_score
     global high_score
     
     player = Player()
@@ -168,14 +186,9 @@ def tela_jogo(TELA):
     while running:
         screen.fill(BLACK)
 
-        # Atualiza o recorde se necessário
         if meters > high_score:
             high_score = meters
 
-        # Restante da lógica do jogo...
-        # (Mantido igual ao original, apenas removida a declaração local de high_score)
-
-        # Aumento progressivo de velocidade
         if meters >= speed_increase_threshold:
             current_obstacle_speed = min(BASE_OBSTACLE_SPEED + (meters // SPEED_INCREASE_INTERVAL), MAX_OBSTACLE_SPEED)
             speed_increase_threshold += SPEED_INCREASE_INTERVAL
@@ -190,24 +203,21 @@ def tela_jogo(TELA):
                 elif event.key == pygame.K_RIGHT:
                     player.move("right")
 
-        # Geração de obstáculos
         obstacle_timer += 1
-        spawn_rate = BASE_OBSTACLE_SPAWN_RATE
-
-        if current_obstacle_speed >= OBSTACLE_INCREASE_SPEED:
-            reduction = (current_obstacle_speed - OBSTACLE_INCREASE_SPEED) * 3
-            spawn_rate = max(BASE_OBSTACLE_SPAWN_RATE - reduction, MIN_OBSTACLE_SPAWN_RATE)
+        spawn_rate = max(BASE_OBSTACLE_SPAWN_RATE - (meters // 50), MIN_OBSTACLE_SPAWN_RATE)
 
         if obstacle_timer >= spawn_rate:
-            if current_obstacle_speed >= OBSTACLE_INCREASE_SPEED and random.random() < 0.4:
+            if random.random() < 0.3:  # 30% de chance de gerar 2 carros
                 lanes = random.sample(range(LANES), min(2, LANES))
                 for lane in lanes:
-                    obstacles.append(Obstacle(lane))
+                    if is_position_free(lane, obstacles):
+                        obstacles.append(Obstacle(lane))
             else:
-                obstacles.append(Obstacle(random.randint(0, LANES - 1)))
+                lane = random.randint(0, LANES - 1)
+                if is_position_free(lane, obstacles):
+                    obstacles.append(Obstacle(lane))
             obstacle_timer = 0
 
-        # Geração de moedas
         coin_timer += 1
         if coin_timer >= COIN_SPAWN_RATE:
             free_lanes = [lane for lane in range(LANES) if is_position_free(lane, obstacles)]
@@ -215,33 +225,30 @@ def tela_jogo(TELA):
                 coins.append(Coin(random.choice(free_lanes)))
                 coin_timer = 0
 
-        # Atualização dos obstáculos
         for obstacle in obstacles[:]:
             if obstacle.update(current_obstacle_speed):
                 obstacles.remove(obstacle)
-            obstacle.draw(screen)
+            else:
+                obstacle.draw(screen)
 
-        # Atualização das moedas
         for coin in coins[:]:
             if coin.update(current_obstacle_speed):
                 coins.remove(coin)
-            coin.draw(screen, rosquinha)
+            else:
+                coin.draw(screen, rosquinha)
 
-            # Colisão com moedas
-            if (player.x < coin.x + coin.width and
-                player.x + player.width > coin.x and
-                player.y < coin.y + coin.height and
-                player.y + player.height > coin.y):
-                coins.remove(coin)
-                meters += 10
+                if (player.x < coin.x + coin.width and
+                    player.x + player.width > coin.x and
+                    player.y < coin.y + coin.height and
+                    player.y + player.height > coin.y):
+                    coins.remove(coin)
+                    meters += 10
 
-        # Atualização dos metros
         meter_timer += 1
         if meter_timer >= 60:
             meters += 1
             meter_timer = 0
 
-        # Colisão com obstáculos
         for obstacle in obstacles:
             if (player.x < obstacle.x + obstacle.width and
                 player.x + player.width > obstacle.x and
@@ -249,15 +256,25 @@ def tela_jogo(TELA):
                 player.y + player.height > obstacle.y):
                 running = False
 
-        # Desenho do jogador e HUD
         player.draw(screen)
         draw_hud(screen, meters, current_obstacle_speed, high_score)
 
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(FPS)
 
-    # Ao sair do loop do jogo, mostra a tela de Game Over
     if game_over_screen(screen, meters, high_score):
-        return True, "tela jogo"  # Reinicia o jogo
+        return True, "tela jogo"
     else:
-        return True, "tela inicial"  # Volta para tela inicial
+        return True, "tela inicial"
+    
+def carregar_imagem_obstaculo():
+    try:
+        caminho_imagem = random.choice(IMAGENS_CARROS)
+        imagem = pygame.image.load(caminho_imagem).convert_alpha()
+        return imagem
+    except Exception as e:
+        print(f"Erro ao carregar imagem: {e}")
+        # Retorna uma imagem padrão se houver erro
+        surf = pygame.Surface((OBSTACLE_WIDTH, OBSTACLE_HEIGHT), pygame.SRCALPHA)
+        pygame.draw.rect(surf, RED, (0, 0, OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+        return surf

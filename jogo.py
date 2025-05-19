@@ -1,50 +1,40 @@
-# import pygame
-# pygame.init()
-
-# from parametros import *
-# from funcoes import *
-
-# LARGURA = 800
-# ALTURA = 600
-# jogo = True
-# tela_atual = "tela inicial"
-
-# TELA = pygame.display.set_mode((LARGURA, ALTURA))
-# pygame.display.set_caption("Simpsons Subway Surfers")
-# while jogo:
-    
-#     if tela_atual=="tela inicial":
-#         jogo, tela_atual = tela_inicial(jogo,TELA,fundo,titulo_rect,personagem,personagem_rect,tela_atual)
-#     if tela_atual == "tela jogo":
-#         jogo, tela_atual = tela_jogo(TELA)
-
-
-# pygame.quit()
-
 import pygame
 pygame.init()
 from parametros import *
 from funcoes import *
 
 def main():
-    
-    # Configurações da janela principal
-    TELA = pygame.display.set_mode((LARGURA, ALTURA))
-    pygame.display.set_caption("Subway Simpsons")
-    
-    # Variáveis de estado
+    # Configurações iniciais
     jogo = True
     tela_atual = "tela inicial"
-    clock = pygame.time.Clock()
-    
+
+    # Telas - cada uma com suas próprias dimensões
+    TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
+    pygame.display.set_caption("Simpsons Subway Surfers")
+
+    # Loop principal do jogo
     while jogo:
         if tela_atual == "tela inicial":
-            jogo, tela_atual = tela_inicial(jogo, TELA, fundo, titulo_rect, personagem, personagem_rect, tela_atual)
+            jogo, tela_atual = tela_inicial(
+                jogo, 
+                TELA_INICIAL,  # Usando apenas TELA_INICIAL aqui
+                fundo, 
+                titulo, 
+                titulo_rect, 
+                personagem, 
+                personagem_rect, 
+                botaojogar, 
+                botaojogar_rect, 
+                tela_atual
+            )
         elif tela_atual == "tela jogo":
-            jogo, tela_atual = tela_jogo(TELA)
-        
-        clock.tick(60)
-    
+            # Criamos a tela de jogo apenas quando necessário
+            TELA_JOGO = pygame.display.set_mode((WIDTH, HEIGHT))
+            jogo, tela_atual = tela_jogo(TELA_JOGO)
+            # Quando sair do jogo, voltamos para a tela inicial
+            if tela_atual == "tela inicial":
+                TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
+
     pygame.quit()
 
 if __name__ == "__main__":
