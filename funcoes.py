@@ -118,24 +118,27 @@ def draw_button(screen, text, x, y, width, height, inactive_color, active_color)
 
 def game_over_screen(screen, final_meters, high_score):
     screen.fill(BLACK)
+
+    screen.blit(gameoverimagem,gameoverimagem_rect)
+
     font_large = pygame.font.SysFont(None, 72)
     font_medium = pygame.font.SysFont(None, 48)
     
     game_over_text = font_large.render("GAME OVER", True, RED)
-    game_over_rect = game_over_text.get_rect(center=(WIDTH/2, HEIGHT/4))
+    game_over_rect = game_over_text.get_rect(center=(WIDTH/2, HEIGHT/8))
     screen.blit(game_over_text, game_over_rect)
     
     score_text = font_medium.render(f"Pontuação atual: {final_meters}", True, WHITE)
-    score_rect = score_text.get_rect(center=(WIDTH/2, HEIGHT/3))
+    score_rect = score_text.get_rect(center=(WIDTH/2, HEIGHT/5))
     screen.blit(score_text, score_rect)
     
     high_score_text = font_medium.render(f"Recorde: {high_score}", True, WHITE)
-    high_score_rect = high_score_text.get_rect(center=(WIDTH/2, HEIGHT/2.4))
+    high_score_rect = high_score_text.get_rect(center=(WIDTH/2, HEIGHT/4))
     screen.blit(high_score_text, high_score_rect)
     
     restart = False
     while not restart:
-        restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*2/3, 200, 50, GOLD, WHITE)
+        restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*5/6, 200, 50, GOLD, WHITE)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

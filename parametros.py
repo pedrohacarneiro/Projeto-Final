@@ -1,7 +1,7 @@
 import pygame
 
 # Configurações de tela
-WIDTH, HEIGHT = 500, 800  # Largura aumentada para 700
+WIDTH, HEIGHT = 500, 700  # Largura aumentada para 700
 LARGURA, ALTURA = 1000, 600  # Para a tela inicial
 
 # Cores
@@ -61,6 +61,10 @@ rosquinha = pygame.transform.scale(rosquinha, (COIN_SIZE, COIN_SIZE))
 fonte_titulo = pygame.font.SysFont("comicsansms", 60, bold=True)
 titulo = fonte_titulo.render("Springfield Surfers", True, AMARELO)
 titulo_rect = titulo.get_rect(center=(LARGURA / 2, 250))
+
+gameoverimagem = pygame.image.load("gameoverimagem.png")
+gameoverimagem = pygame.transform.scale(gameoverimagem, (350, 400))
+gameoverimagem_rect = gameoverimagem.get_rect(center=(WIDTH/2, HEIGHT/1.5))
 
 # Caminhos das imagens dos obstáculos (carros)
 IMAGENS_CARROS = [
