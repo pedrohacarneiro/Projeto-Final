@@ -207,7 +207,8 @@ def tela_jogo(TELA):
         spawn_rate = max(BASE_OBSTACLE_SPAWN_RATE - (meters // 50), MIN_OBSTACLE_SPAWN_RATE)
 
         if obstacle_timer >= spawn_rate:
-            if random.random() < 0.3:  # 30% de chance de gerar 2 carros
+            # Só permite múltiplos obstáculos se a velocidade for >= OBSTACLE_INCREASE_SPEED (17)
+            if current_obstacle_speed >= OBSTACLE_INCREASE_SPEED and random.random() < 0.3:
                 lanes = random.sample(range(LANES), min(2, LANES))
                 for lane in lanes:
                     if is_position_free(lane, obstacles):

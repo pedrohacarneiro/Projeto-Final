@@ -10,7 +10,7 @@ def main():
 
     # Telas - cada uma com suas próprias dimensões
     TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
-    pygame.display.set_caption("Simpsons Subway Surfers")
+    pygame.display.set_caption("Springfield Surfers")
 
     # Loop principal do jogo
     while jogo:
