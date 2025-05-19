@@ -65,8 +65,8 @@ titulo = fonte_titulo.render("Springfield Surfers", True, AMARELO)
 titulo_rect = titulo.get_rect(center=(LARGURA / 2, 250))
 
 gameoverimagem = pygame.image.load("gameoverimagem.png")
-gameoverimagem = pygame.transform.scale(gameoverimagem, (400, 400))
-gameoverimagem_rect = gameoverimagem.get_rect(center=(WIDTH/2, HEIGHT/1.5))
+gameoverimagem = pygame.transform.scale(gameoverimagem, (400, 350))
+gameoverimagem_rect = gameoverimagem.get_rect(center=(WIDTH/2, 530))
 
 # Caminhos das imagens dos obstáculos (carros)
 IMAGENS_CARROS = [

@@ -118,14 +118,14 @@ def draw_button(screen, text, x, y, width, height, inactive_color, active_color)
     return False
 
 def game_over_screen(screen, final_meters, high_score):
-    screen.fill(BLACK)
+    screen.fill(VERDE_FINAL)
 
     screen.blit(gameoverimagem,gameoverimagem_rect)
 
     font_large = pygame.font.SysFont(None, 72)
     font_medium = pygame.font.SysFont(None, 48)
     
-    game_over_text = font_large.render("GAME OVER", True, RED)
+    game_over_text = font_large.render("GAME OVER", True, BLACK)
     game_over_rect = game_over_text.get_rect(center=(WIDTH/2, HEIGHT/8))
     screen.blit(game_over_text, game_over_rect)
     
@@ -139,7 +139,7 @@ def game_over_screen(screen, final_meters, high_score):
     
     restart = False
     while not restart:
-        restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*5/6, 200, 50, GOLD, WHITE)
+        restart = draw_button(screen, "REINICIAR", WIDTH/2 - 100, HEIGHT*2/6, 200, 50, GOLD, WHITE)
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
