@@ -73,6 +73,42 @@ class Coin:
         self.y += speed
         return self.y > HEIGHT
 
+class BackgroundManager:
+    def __init__(self):
+        self.images = [pygame.image.load(img).convert_alpha() for img in IMAGENS_FUNDOS]
+        self.current_bg_index = 0
+        self.current_bg_y = 0
+        self.next_bg_y = -HEIGHT  # Posição da próxima imagem (acima da tela)
+        self.speed = 5  # Velocidade de rolagem do fundo
+        
+    def update(self):
+        self.current_bg_y += self.speed
+        self.next_bg_y += self.speed
+        
+        # Quando a imagem atual sair completamente da tela
+        if self.current_bg_y >= HEIGHT:
+            self.current_bg_y = self.next_bg_y - HEIGHT
+            self.next_bg_y = self.current_bg_y + HEIGHT
+            self.current_bg_index = (self.current_bg_index + 1) % len(self.images)
+            
+    def draw(self, screen):
+        # Desenha a imagem atual
+        current_img = self.images[self.current_bg_index]
+        scaled_current = pygame.transform.scale(current_img, (WIDTH, HEIGHT))
+        screen.blit(scaled_current, (0, self.current_bg_y))
+        
+        # Desenha a próxima imagem (se visível)
+        next_img = self.images[(self.current_bg_index + 1) % len(self.images)]
+        scaled_next = pygame.transform.scale(next_img, (WIDTH, HEIGHT))
+        screen.blit(scaled_next, (0, self.next_bg_y))
+        
+        # Se ainda houver espaço vazio, desenha mais uma imagem (para transições suaves)
+        if self.next_bg_y > 0:
+            next_next_img = self.images[(self.current_bg_index + 2) % len(self.images)]
+            scaled_next_next = pygame.transform.scale(next_next_img, (WIDTH, HEIGHT))
+            screen.blit(scaled_next_next, (0, self.next_bg_y - HEIGHT))
+
+
 def is_position_free(lane, objects):
     for obj in objects:
         if obj.lane == lane and obj.y > -obj.height:
@@ -190,6 +226,10 @@ def tela_jogo(TELA, contador):
     obstacle_timer = 0
     coin_timer = 0
     meter_timer = 0
+    
+    # Adiciona o gerenciador de fundo
+    bg_manager = BackgroundManager()
+    
     if contador==0:
         pygame.mixer.music.load("trilha.mp3")
         pygame.mixer.music.play(loops=1)
@@ -198,8 +238,13 @@ def tela_jogo(TELA, contador):
     
     running = True
     while running:
-        screen.fill(BLACK)
-
+        # Atualiza e desenha o fundo
+        bg_manager.update()
+        bg_manager.draw(screen)
+        
+        # A velocidade do fundo acompanha a velocidade dos obstáculos
+        bg_manager.speed = current_obstacle_speed * 0.5  # 50% da velocidade dos obstáculos
+        
         if meters > high_score:
             high_score = meters
 
@@ -207,6 +252,7 @@ def tela_jogo(TELA, contador):
             current_obstacle_speed = min(BASE_OBSTACLE_SPEED + (meters // SPEED_INCREASE_INTERVAL), MAX_OBSTACLE_SPEED)
             speed_increase_threshold += SPEED_INCREASE_INTERVAL
 
+        # Restante do código permanece o mesmo...
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -221,7 +267,6 @@ def tela_jogo(TELA, contador):
         spawn_rate = max(BASE_OBSTACLE_SPAWN_RATE - (meters // 50), MIN_OBSTACLE_SPAWN_RATE)
 
         if obstacle_timer >= spawn_rate:
-            # Só permite múltiplos obstáculos se a velocidade for >= OBSTACLE_INCREASE_SPEED (17)
             if current_obstacle_speed >= OBSTACLE_INCREASE_SPEED and random.random() < 0.3:
                 lanes = random.sample(range(LANES), min(2, LANES))
                 for lane in lanes:
