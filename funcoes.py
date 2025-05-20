@@ -1,3 +1,4 @@
+# funcoes.py
 import pygame
 import random
 import sys
@@ -29,15 +30,12 @@ class Obstacle:
         self.lane = lane
         self.image = carregar_imagem_obstaculo()
         
-        # Calcula dimensões mantendo proporção
         img_width, img_height = self.image.get_size()
         aspect_ratio = img_width / img_height
         
-        # Define altura fixa e calcula largura proporcional
         self.height = OBSTACLE_HEIGHT
         self.width = int(self.height * aspect_ratio)
         
-        # Ajusta se for muito largo
         if self.width > lane_width - 20:
             self.width = lane_width - 20
             self.height = int(self.width / aspect_ratio)
@@ -46,7 +44,6 @@ class Obstacle:
         self.x = lane * lane_width + (lane_width - self.width) // 2
         self.y = -self.height
         
-        # Cria sombra para efeito visual
         self.shadow = pygame.Surface((self.width + 10, 15), pygame.SRCALPHA)
         self.shadow.fill((0, 0, 0, 100))
 
@@ -76,37 +73,35 @@ class Coin:
 class BackgroundManager:
     def __init__(self):
         self.images = [pygame.image.load(img).convert_alpha() for img in IMAGENS_FUNDOS]
-        self.current_bg_index = 0
-        self.current_bg_y = 0
-        self.next_bg_y = -HEIGHT  # Posição da próxima imagem (acima da tela)
-        self.speed = 5  # Velocidade de rolagem do fundo
+        self.current_bg_index = random.randint(0, len(self.images) - 1)
+        self.next_bg_index = self.get_next_random_index(self.current_bg_index)
+        self.current_bg = pygame.transform.scale(self.images[self.current_bg_index], (WIDTH, HEIGHT))
+        self.next_bg = pygame.transform.scale(self.images[self.next_bg_index], (WIDTH, HEIGHT))
+        self.current_y = 0
+        self.next_y = -HEIGHT
+        self.speed = 5
+        
+    def get_next_random_index(self, current_index):
+        next_index = random.randint(0, len(self.images) - 1)
+        while next_index == current_index and len(self.images) > 1:
+            next_index = random.randint(0, len(self.images) - 1)
+        return next_index
         
     def update(self):
-        self.current_bg_y += self.speed
-        self.next_bg_y += self.speed
+        self.current_y += self.speed
+        self.next_y += self.speed
         
-        # Quando a imagem atual sair completamente da tela
-        if self.current_bg_y >= HEIGHT:
-            self.current_bg_y = self.next_bg_y - HEIGHT
-            self.next_bg_y = self.current_bg_y + HEIGHT
-            self.current_bg_index = (self.current_bg_index + 1) % len(self.images)
+        if self.current_y >= HEIGHT:
+            self.current_y = self.next_y - HEIGHT
+            self.next_y = self.current_y + HEIGHT
+            self.current_bg_index = self.next_bg_index
+            self.next_bg_index = self.get_next_random_index(self.current_bg_index)
+            self.current_bg = pygame.transform.scale(self.images[self.current_bg_index], (WIDTH, HEIGHT))
+            self.next_bg = pygame.transform.scale(self.images[self.next_bg_index], (WIDTH, HEIGHT))
             
     def draw(self, screen):
-        # Desenha a imagem atual
-        current_img = self.images[self.current_bg_index]
-        scaled_current = pygame.transform.scale(current_img, (WIDTH, HEIGHT))
-        screen.blit(scaled_current, (0, self.current_bg_y))
-        
-        # Desenha a próxima imagem (se visível)
-        next_img = self.images[(self.current_bg_index + 1) % len(self.images)]
-        scaled_next = pygame.transform.scale(next_img, (WIDTH, HEIGHT))
-        screen.blit(scaled_next, (0, self.next_bg_y))
-        
-        # Se ainda houver espaço vazio, desenha mais uma imagem (para transições suaves)
-        if self.next_bg_y > 0:
-            next_next_img = self.images[(self.current_bg_index + 2) % len(self.images)]
-            scaled_next_next = pygame.transform.scale(next_next_img, (WIDTH, HEIGHT))
-            screen.blit(scaled_next_next, (0, self.next_bg_y - HEIGHT))
+        screen.blit(self.current_bg, (0, self.current_y))
+        screen.blit(self.next_bg, (0, self.next_y))
 
 
 def is_position_free(lane, objects):
@@ -118,19 +113,16 @@ def is_position_free(lane, objects):
 def draw_hud(screen, meters, speed, high_score):
     font = pygame.font.SysFont(None, 36)
     
-    # Contador de metros
     meter_text = font.render(f"Pontuação: {meters}", True, BLACK)
     text_rect = meter_text.get_rect(topleft=(10, 10))
     pygame.draw.rect(screen, YELLOW, (text_rect.x - 5, text_rect.y - 5, text_rect.width + 10, text_rect.height + 10))
     screen.blit(meter_text, (10, 10))
     
-    # Contador de velocidade
     speed_text = font.render(f"Velocidade: {speed}", True, BLACK)
     speed_rect = speed_text.get_rect(topleft=(10, 50))
     pygame.draw.rect(screen, YELLOW, (speed_rect.x - 5, speed_rect.y - 5, speed_rect.width + 10, speed_rect.height + 10))
     screen.blit(speed_text, (10, 50))
     
-    # Recorde
     hs_text = font.render(f"Recorde: {high_score}", True, BLACK)
     hs_rect = hs_text.get_rect(topleft=(10, 90))
     pygame.draw.rect(screen, YELLOW, (hs_rect.x - 5, hs_rect.y - 5, hs_rect.width + 10, hs_rect.height + 10))
@@ -227,23 +219,22 @@ def tela_jogo(TELA, contador):
     coin_timer = 0
     meter_timer = 0
     
-    # Adiciona o gerenciador de fundo
     bg_manager = BackgroundManager()
     
     if contador==0:
         pygame.mixer.music.load("trilha.mp3")
-        pygame.mixer.music.play(loops=1)
+        pygame.mixer.music.play(loops=-1)  # Loop infinito
     
     contador+=1
     
     running = True
     while running:
+        screen.fill((0, 0, 0))  # Limpa a tela
+        
         # Atualiza e desenha o fundo
+        bg_manager.speed = current_obstacle_speed * 0.5
         bg_manager.update()
         bg_manager.draw(screen)
-        
-        # A velocidade do fundo acompanha a velocidade dos obstáculos
-        bg_manager.speed = current_obstacle_speed * 0.5  # 50% da velocidade dos obstáculos
         
         if meters > high_score:
             high_score = meters
@@ -252,7 +243,6 @@ def tela_jogo(TELA, contador):
             current_obstacle_speed = min(BASE_OBSTACLE_SPEED + (meters // SPEED_INCREASE_INTERVAL), MAX_OBSTACLE_SPEED)
             speed_increase_threshold += SPEED_INCREASE_INTERVAL
 
-        # Restante do código permanece o mesmo...
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -335,7 +325,6 @@ def carregar_imagem_obstaculo():
         return imagem
     except Exception as e:
         print(f"Erro ao carregar imagem: {e}")
-        # Retorna uma imagem padrão se houver erro
         surf = pygame.Surface((OBSTACLE_WIDTH, OBSTACLE_HEIGHT), pygame.SRCALPHA)
         pygame.draw.rect(surf, RED, (0, 0, OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
         return surf
