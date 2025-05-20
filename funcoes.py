@@ -1,4 +1,3 @@
-# funcoes.py
 import pygame
 import random
 import sys
@@ -93,10 +92,11 @@ class BackgroundManager:
         
         if self.current_y >= HEIGHT:
             self.current_y = self.next_y - HEIGHT
-            self.next_y = self.current_y + HEIGHT
+            self.current_bg = self.next_bg
             self.current_bg_index = self.next_bg_index
+            
+            self.next_y = self.current_y + HEIGHT
             self.next_bg_index = self.get_next_random_index(self.current_bg_index)
-            self.current_bg = pygame.transform.scale(self.images[self.current_bg_index], (WIDTH, HEIGHT))
             self.next_bg = pygame.transform.scale(self.images[self.next_bg_index], (WIDTH, HEIGHT))
             
     def draw(self, screen):
@@ -148,7 +148,7 @@ def draw_button(screen, text, x, y, width, height, inactive_color, active_color)
 def game_over_screen(screen, final_meters, high_score):
     screen.fill(VERDE_FINAL)
 
-    screen.blit(gameoverimagem,gameoverimagem_rect)
+    screen.blit(gameoverimagem, gameoverimagem_rect)
 
     font_large = pygame.font.SysFont(None, 72)
     font_medium = pygame.font.SysFont(None, 48)
@@ -179,22 +179,22 @@ def game_over_screen(screen, final_meters, high_score):
     
     return True
 
-def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_rect, botaojogar, botaojogar_rect, tela_atual,contador):
+def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_rect, botaojogar, botaojogar_rect, tela_atual, contador):
     TELA.blit(fundo, (0, 0))
     TELA.blit(titulo, titulo_rect)
     TELA.blit(personagem, personagem_rect)
     TELA.blit(botaojogar, botaojogar_rect)
 
-    if contador==0:
+    if contador == 0:
         pygame.mixer.music.load("inicio.mp3")
         pygame.mixer.music.play(loops=1)
     
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    contador+=1
+    contador += 1
     if botaojogar_rect.collidepoint(mouse) and click[0] == 1:
         tela_atual = "tela jogo"
-        contador=0
+        contador = 0
     
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
@@ -221,11 +221,11 @@ def tela_jogo(TELA, contador):
     
     bg_manager = BackgroundManager()
     
-    if contador==0:
+    if contador == 0:
         pygame.mixer.music.load("trilha.mp3")
         pygame.mixer.music.play(loops=-1)  # Loop infinito
     
-    contador+=1
+    contador += 1
     
     running = True
     while running:
@@ -305,7 +305,7 @@ def tela_jogo(TELA, contador):
                 player.y < obstacle.y + obstacle.height and
                 player.y + player.height > obstacle.y):
                 running = False
-                contador=0
+                contador = 0
 
         player.draw(screen)
         draw_hud(screen, meters, current_obstacle_speed, high_score)

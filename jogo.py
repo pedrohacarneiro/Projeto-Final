@@ -11,10 +11,10 @@ def main():
     TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
     pygame.display.set_caption("Springfield Surfers")
 
-    contador=0
+    contador = 0
     while jogo:
         if tela_atual == "tela inicial":
-            jogo, tela_atual,contador = tela_inicial(
+            jogo, tela_atual, contador = tela_inicial(
                 jogo, 
                 TELA_INICIAL,
                 fundo, 
@@ -29,7 +29,7 @@ def main():
             )
         elif tela_atual == "tela jogo":
             TELA_JOGO = pygame.display.set_mode((WIDTH, HEIGHT))
-            jogo, tela_atual, contador = tela_jogo(TELA_JOGO,contador)
+            jogo, tela_atual, contador = tela_jogo(TELA_JOGO, contador)
             if tela_atual == "tela inicial":
                 TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
 
