@@ -91,6 +91,13 @@ IMAGENS_FUNDOS = [
     "fundo9.png"
 ]
 
-
+frames = [
+    'Framebart1.png',
+    'Framebart2.png',
+    'Framebart3.png',
+    'Framebart4.png',
+    'Framebart5.png',
+    'Framebart6.png',
+]
 
 som_comendo = pygame.mixer.Sound("Somcomendo.mp3")
