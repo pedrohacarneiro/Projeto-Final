@@ -44,10 +44,8 @@ class Obstacle:
         self.y = -self.height
         
         self.shadow = pygame.Surface((self.width + 10, 15), pygame.SRCALPHA)
-        self.shadow.fill((0, 0, 0, 100))
 
     def draw(self, screen):
-        screen.blit(self.shadow, (self.x - 5, self.y + self.height - 5))
         screen.blit(self.image, (self.x, self.y))
 
     def update(self, speed):
@@ -79,6 +77,8 @@ class BackgroundManager:
         self.current_y = 0
         self.next_y = -HEIGHT
         self.speed = 5
+
+    
         
     def get_next_random_index(self, current_index):
         next_index = random.randint(0, len(self.images) - 1)
@@ -89,19 +89,22 @@ class BackgroundManager:
     def update(self):
         self.current_y += self.speed
         self.next_y += self.speed
-        
+
+        # Quando o fundo atual sair completamente da tela:
         if self.current_y >= HEIGHT:
-            self.current_y = self.next_y - HEIGHT
+            # Reposiciona o atual para ocupar o lugar do próximo
             self.current_bg = self.next_bg
             self.current_bg_index = self.next_bg_index
-            
-            self.next_y = self.current_y + HEIGHT
+            self.current_y = self.next_y
+
+            # Define o novo próximo fundo, acima da tela
             self.next_bg_index = self.get_next_random_index(self.current_bg_index)
-            self.next_bg = pygame.transform.scale(self.images[self.next_bg_index], (WIDTH, HEIGHT))
+            self.next_bg = pygame.transform.scale(self.images[self.next_bg_index], (int(WIDTH), int(HEIGHT)))
+            self.next_y = self.current_y - HEIGHT  # Agora sim, novo fundo acima
             
     def draw(self, screen):
-        screen.blit(self.current_bg, (0, self.current_y))
-        screen.blit(self.next_bg, (0, self.next_y))
+        screen.blit(self.current_bg, (0, int(self.current_y)))
+        screen.blit(self.next_bg, (0, int(self.next_y)))
 
 
 def is_position_free(lane, objects):
@@ -270,7 +273,17 @@ def tela_jogo(TELA, contador):
 
         coin_timer += 1
         if coin_timer >= COIN_SPAWN_RATE:
-            free_lanes = [lane for lane in range(LANES) if is_position_free(lane, obstacles)]
+            free_lanes = []
+
+            for lane in range(LANES):
+                lane_is_clear = True
+                for obs in obstacles:
+                    if obs.lane == lane and obs.y < COIN_SIZE * 2:  # distância segura ajustável
+                        lane_is_clear = False
+                        break
+                if lane_is_clear:
+                    free_lanes.append(lane)
+
             if free_lanes:
                 coins.append(Coin(random.choice(free_lanes)))
                 coin_timer = 0
