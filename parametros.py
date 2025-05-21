@@ -91,4 +91,6 @@ IMAGENS_FUNDOS = [
     "fundo9.png"
 ]
 
+
+
 som_comendo = pygame.mixer.Sound("Somcomendo.mp3")
