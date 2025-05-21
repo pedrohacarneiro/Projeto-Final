@@ -304,6 +304,7 @@ def tela_jogo(TELA, contador):
                     player.x + player.width > coin.x and
                     player.y < coin.y + coin.height and
                     player.y + player.height > coin.y):
+                    som_comendo.play()
                     coins.remove(coin)
                     meters += 10
 
