@@ -67,6 +67,21 @@ class Coin:
         self.y += speed
         return self.y > HEIGHT
 
+class SuperPower:
+    def __init__(self, lane):
+        self.width = COIN_SIZE 
+        self.height = COIN_SIZE
+        self.lane = lane
+        self.x = lane * lane_width + (lane_width - self.width) // 2
+        self.y = -self.height
+
+    def draw(self, screen, cerveja_img):
+        screen.blit(cerveja_img, (self.x, self.y))
+
+    def update(self, speed):
+        self.y += speed
+        return self.y > HEIGHT
+
 class BackgroundManager:
     def __init__(self):
         self.images = [pygame.image.load(img).convert_alpha() for img in IMAGENS_FUNDOS]
@@ -222,6 +237,11 @@ def tela_jogo(TELA, contador):
     coin_timer = 0
     meter_timer = 0
     
+    super_powers = []
+    power_timer = 0
+    intangibility = False
+    intangibility_end_time = 0
+
     bg_manager = BackgroundManager()
     
     if contador == 0:
@@ -288,6 +308,9 @@ def tela_jogo(TELA, contador):
                 coins.append(Coin(random.choice(free_lanes)))
                 coin_timer = 0
 
+            if random.random() < odd_cerveja and free_lanes:
+                super_powers.append(SuperPower(random.choice(free_lanes)))
+
         for obstacle in obstacles[:]:
             if obstacle.update(current_obstacle_speed):
                 obstacles.remove(obstacle)
@@ -308,20 +331,40 @@ def tela_jogo(TELA, contador):
                     coins.remove(coin)
                     meters += 10
 
+        for power in super_powers[:]:
+            if power.update(current_obstacle_speed):
+                super_powers.remove(power)
+            else:
+                power.draw(screen, cerveja)  
+
+                if (player.x < power.x + power.width and
+                    player.x + player.width > power.x and
+                    player.y < power.y + power.height and
+                    player.y + player.height > power.y):
+                    super_powers.remove(power)
+                    intangibility = True
+                    intangibility_timer = 180
+        if intangibility:
+            intangibility_timer -= 1
+            if intangibility_timer <= 0:
+                intangibility = False
+
         meter_timer += 1
         if meter_timer >= 60:
             meters += 1
             meter_timer = 0
-
-        for obstacle in obstacles:
-            if (player.x < obstacle.x + obstacle.width and
-                player.x + player.width > obstacle.x and
-                player.y < obstacle.y + obstacle.height and
-                player.y + player.height > obstacle.y):
-                running = False
-                contador = 0
+        if not intangibility:
+            for obstacle in obstacles:
+                if (player.x < obstacle.x + obstacle.width and
+                    player.x + player.width > obstacle.x and
+                    player.y < obstacle.y + obstacle.height and
+                    player.y + player.height > obstacle.y):
+                    running = False
+                    contador = 0
 
         player.draw(screen)
+        if intangibility:
+            pygame.draw.rect(screen, (0, 255, 255), (player.x, player.y, player.width, player.height), 4)
         draw_hud(screen, meters, current_obstacle_speed, high_score)
 
         pygame.display.flip()

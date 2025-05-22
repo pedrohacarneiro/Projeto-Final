@@ -26,7 +26,7 @@ LANES = 3
 lane_width = WIDTH // LANES  # Cada pista terá ~233 pixels
 player_y = HEIGHT - 180  # Ajustado para nova altura dos carros
 player_speed = 5
-
+odd_cerveja = 0.1
 # Dimensões dos objetos
 OBSTACLE_WIDTH = 100
 OBSTACLE_HEIGHT = 240
@@ -59,6 +59,9 @@ personagem_rect = personagem.get_rect(bottomright=(LARGURA-20, ALTURA))
 
 rosquinha = pygame.image.load("rosquinha.png")
 rosquinha = pygame.transform.scale(rosquinha, (COIN_SIZE, COIN_SIZE))
+
+cerveja = pygame.image.load("Cerveja.png")
+cerveja = pygame.transform.scale(cerveja, (COIN_SIZE, COIN_SIZE))
 
 fonte_titulo = pygame.font.SysFont("comicsansms", 60, bold=True)
 titulo = fonte_titulo.render("Springfield Surfers", True, AMARELO)
