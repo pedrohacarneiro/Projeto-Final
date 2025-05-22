@@ -104,3 +104,4 @@ frames = [
 ]
 
 som_comendo = pygame.mixer.Sound("Somcomendo.mp3")
+som_cerveja = pygame.mixer.Sound("abrindocerveja.mp3")

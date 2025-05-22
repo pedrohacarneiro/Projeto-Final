@@ -341,6 +341,7 @@ def tela_jogo(TELA, contador):
                     player.x + player.width > power.x and
                     player.y < power.y + power.height and
                     player.y + player.height > power.y):
+                    som_cerveja.play()
                     super_powers.remove(power)
                     intangibility = True
                     intangibility_timer = 180
