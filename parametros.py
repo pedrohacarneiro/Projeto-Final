@@ -42,7 +42,7 @@ BASE_OBSTACLE_SPAWN_RATE = 60
 MIN_OBSTACLE_SPAWN_RATE = 30
 OBSTACLE_INCREASE_SPEED = 17
 COIN_SPAWN_RATE = 100
-FPS = 60
+FPS = 120
 contador = 0
 
 # Recursos gráficos para a tela inicial
@@ -95,12 +95,12 @@ IMAGENS_FUNDOS = [
 ]
 
 frames = [
-    'Framebart1.png',
-    'Framebart2.png',
-    'Framebart3.png',
-    'Framebart4.png',
-    'Framebart5.png',
-    'Framebart6.png',
+    pygame.transform.scale(pygame.image.load('Framebart1.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart2.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart3.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart4.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart5.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart6.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
 ]
 
 som_comendo = pygame.mixer.Sound("Somcomendo.mp3")

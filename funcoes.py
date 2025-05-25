@@ -11,11 +11,23 @@ class Player:
         self.x = lane_width * 1 + (lane_width - self.width) // 2
         self.y = player_y
         self.lane = 1
+        self.frames = frames
+        self.current_frame = 0
+        self.animation_timer = 0
+        self.animation_speed = 0.2  # segundos por frame
+
+    def update_animation(self, dt):
+        self.animation_timer += dt
+        if self.animation_timer >= self.animation_speed:
+            self.animation_timer = 0
+            self.current_frame = (self.current_frame + 1) % len(self.frames)
 
     def draw(self, screen):
-        pygame.draw.rect(screen, YELLOW, (self.x, self.y, self.width, self.height))
-        pygame.draw.rect(screen, BLUE, (self.x, self.y, self.width, 20))
-        pygame.draw.rect(screen, RED, (self.x, self.y + 20, self.width, 20))
+        screen.blit(self.frames[self.current_frame], (self.x, self.y))
+        
+        # Desenha os retângulos coloridos apenas quando intangível
+        if hasattr(self, 'intangibility') and self.intangibility:
+            pygame.draw.rect(screen, (0, 255, 255), (self.x, self.y, self.width, self.height), 4)
 
     def move(self, direction):
         if direction == "left" and self.lane > 0:
@@ -252,7 +264,13 @@ def tela_jogo(TELA, contador):
     
     running = True
     while running:
+        dt = clock.tick(FPS) / 1000.0  # Delta time em segundos
+        
+        # Atualiza a animação do jogador
+        player.update_animation(dt)
+        
         screen.fill((0, 0, 0))  # Limpa a tela
+
         
         # Atualiza e desenha o fundo
         bg_manager.speed = current_obstacle_speed * 0.5
