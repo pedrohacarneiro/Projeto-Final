@@ -101,6 +101,8 @@ frames = [
     pygame.transform.scale(pygame.image.load('Framebart4.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
     pygame.transform.scale(pygame.image.load('Framebart5.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
     pygame.transform.scale(pygame.image.load('Framebart6.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart7.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart8.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
 ]
 
 som_comendo = pygame.mixer.Sound("Somcomendo.mp3")
