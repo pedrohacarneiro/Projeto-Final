@@ -267,6 +267,7 @@ def tela_jogo(TELA, contador):
     
     super_powers = []
     power_timer = 0
+    power_cooldown = 0  # New variable for power spawn cooldown
     intangibility = False
     intangibility_end_time = 0
 
@@ -331,8 +332,19 @@ def tela_jogo(TELA, contador):
 
             for lane in range(LANES):
                 lane_is_clear = True
+                # Check for obstacles
                 for obs in obstacles:
-                    if obs.lane == lane and obs.y < COIN_SIZE * 2:  # distância segura ajustável
+                    if obs.lane == lane and obs.y < COIN_SIZE * 2:
+                        lane_is_clear = False
+                        break
+                # Check for coins
+                for coin in coins:
+                    if coin.lane == lane and coin.y < COIN_SIZE * 2:
+                        lane_is_clear = False
+                        break
+                # Check for powers
+                for power in super_powers:
+                    if power.lane == lane and power.y < COIN_SIZE * 2:
                         lane_is_clear = False
                         break
                 if lane_is_clear:
@@ -342,8 +354,17 @@ def tela_jogo(TELA, contador):
                 coins.append(Coin(random.choice(free_lanes)))
                 coin_timer = 0
 
-            if random.random() < odd_cerveja and free_lanes:
-                super_powers.append(SuperPower(random.choice(free_lanes)))
+            # Spawn power in a different lane than coins
+            if random.random() < odd_cerveja and free_lanes and power_cooldown <= 0:
+                # Remove lanes that have coins
+                power_free_lanes = [lane for lane in free_lanes if not any(coin.lane == lane for coin in coins)]
+                if power_free_lanes:
+                    super_powers.append(SuperPower(random.choice(power_free_lanes)))
+                    power_cooldown = 1200  # 20 seconds * 60 FPS = 1200 frames
+
+        # Update power cooldown
+        if power_cooldown > 0:
+            power_cooldown -= 1
 
         for obstacle in obstacles[:]:
             if obstacle.update(current_obstacle_speed):
