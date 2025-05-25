@@ -15,7 +15,7 @@ class Player:
         self.frames = frames
         self.current_frame = 0
         self.animation_timer = 0
-        self.animation_speed = 0.2  # segundos por frame
+        self.animation_speed = 0.13  # segundos por frame
         self.slide_speed = 15  # Velocidade do deslizamento
 
     def update_animation(self, dt):

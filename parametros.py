@@ -83,26 +83,33 @@ IMAGENS_CARROS = [
 
 # Caminhos das imagens dos fundos
 IMAGENS_FUNDOS = [
-    "fundo1.png",
-    "fundo2.png",
-    "fundo3.png",
-    "fundo4.png",
-    "fundo5.png",
-    "fundo6.png",
-    "fundo7.png",
-    "fundo8.png",
-    "fundo9.png"
+    "f1.png",
+    "f2.png",
+    "f3.png",
+    "f4.png",
+    "f5.png",
+    "f6.png",
+    "f7.png",
+    "f8.png",
+    "f9.png",
+    "f10.png",
+    "f11.png",
+    "f12.png",
+    "f13.png",
+    "f14.png",
+    "f15.png",
+    "f16.png"
 ]
 
 frames = [
-    pygame.transform.scale(pygame.image.load('Framebart1.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart2.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart3.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart4.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart5.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart6.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart7.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
-    pygame.transform.scale(pygame.image.load('Framebart8.png'), (PLAYER_WIDTH*2, PLAYER_HEIGHT*2)),
+    pygame.transform.scale(pygame.image.load('Framebart1.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
+    pygame.transform.scale(pygame.image.load('Framebart2.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
+    pygame.transform.scale(pygame.image.load('Framebart3.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
+    pygame.transform.scale(pygame.image.load('Framebart4.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
+    pygame.transform.scale(pygame.image.load('Framebart5.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
+    pygame.transform.scale(pygame.image.load('Framebart6.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
+    pygame.transform.scale(pygame.image.load('Framebart7.png'), (PLAYER_WIDTH*1.5, PLAYER_HEIGHT*1.7)),
+    pygame.transform.scale(pygame.image.load('Framebart8.png'), (PLAYER_WIDTH*1.8, PLAYER_HEIGHT*1.5)),
 ]
 
 som_comendo = pygame.mixer.Sound("Somcomendo.mp3")
