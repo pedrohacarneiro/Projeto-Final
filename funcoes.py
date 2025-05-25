@@ -17,6 +17,15 @@ class Player:
         self.animation_timer = 0
         self.animation_speed = 0.13  # segundos por frame
         self.slide_speed = 15  # Velocidade do deslizamento
+        # Área de colisão ainda menor que o sprite
+        self.collision_width = self.width * 0.5  # 50% da largura
+        self.collision_height = self.height * 0.5  # 50% da altura
+
+    def get_collision_rect(self):
+        # Retorna um retângulo de colisão centralizado no sprite
+        x = self.x + (self.width - self.collision_width) // 2
+        y = self.y + (self.height - self.collision_height) // 2
+        return pygame.Rect(x, y, self.collision_width, self.collision_height)
 
     def update_animation(self, dt):
         self.animation_timer += dt
@@ -52,12 +61,15 @@ class Obstacle:
         self.lane = lane
         self.image = carregar_imagem_obstaculo()
         
+        # Calcula dimensões mantendo proporção
         img_width, img_height = self.image.get_size()
         aspect_ratio = img_width / img_height
         
+        # Define altura fixa e calcula largura proporcional
         self.height = OBSTACLE_HEIGHT
         self.width = int(self.height * aspect_ratio)
         
+        # Ajusta se for muito largo
         if self.width > lane_width - 20:
             self.width = lane_width - 20
             self.height = int(self.width / aspect_ratio)
@@ -65,8 +77,6 @@ class Obstacle:
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.x = lane * lane_width + (lane_width - self.width) // 2
         self.y = -self.height
-        
-        self.shadow = pygame.Surface((self.width + 10, 15), pygame.SRCALPHA)
 
     def draw(self, screen):
         screen.blit(self.image, (self.x, self.y))
@@ -380,10 +390,10 @@ def tela_jogo(TELA, contador):
             meter_timer = 0
         if not intangibility:
             for obstacle in obstacles:
-                if (player.x < obstacle.x + obstacle.width and
-                    player.x + player.width > obstacle.x and
-                    player.y < obstacle.y + obstacle.height and
-                    player.y + player.height > obstacle.y):
+                player_rect = player.get_collision_rect()
+                obstacle_rect = pygame.Rect(obstacle.x, obstacle.y, obstacle.width, obstacle.height)
+                
+                if player_rect.colliderect(obstacle_rect):
                     running = False
                     contador = 0
 
