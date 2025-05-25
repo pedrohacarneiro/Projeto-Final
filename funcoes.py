@@ -6,15 +6,17 @@ from parametros import *
 
 class Player:
     def __init__(self):
-        self.width = PLAYER_WIDTH
-        self.height = PLAYER_HEIGHT
-        self.x = lane_width * 1 + (lane_width - self.width) // 2
-        self.y = player_y
+        self.width = PLAYER_WIDTH * 2  # Dobrando o tamanho original
+        self.height = PLAYER_HEIGHT * 2  # Dobrando o tamanho original
         self.lane = 1
+        self.x = (lane_width * self.lane) + (lane_width - self.width) // 2
+        self.target_x = self.x  # Posição alvo para o deslizamento
+        self.y = player_y
         self.frames = frames
         self.current_frame = 0
         self.animation_timer = 0
         self.animation_speed = 0.2  # segundos por frame
+        self.slide_speed = 15  # Velocidade do deslizamento
 
     def update_animation(self, dt):
         self.animation_timer += dt
@@ -22,7 +24,15 @@ class Player:
             self.animation_timer = 0
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
+    def update_position(self):
+        # Atualiza a posição x para criar o efeito de deslizamento
+        if self.x < self.target_x:
+            self.x = min(self.x + self.slide_speed, self.target_x)
+        elif self.x > self.target_x:
+            self.x = max(self.x - self.slide_speed, self.target_x)
+
     def draw(self, screen):
+        # Desenha o sprite na posição x com o tamanho original
         screen.blit(self.frames[self.current_frame], (self.x, self.y))
         
         # Desenha os retângulos coloridos apenas quando intangível
@@ -32,9 +42,10 @@ class Player:
     def move(self, direction):
         if direction == "left" and self.lane > 0:
             self.lane -= 1
+            self.target_x = (lane_width * self.lane) + (lane_width - self.width) // 2
         elif direction == "right" and self.lane < LANES - 1:
             self.lane += 1
-        self.x = self.lane * lane_width + (lane_width - self.width) // 2
+            self.target_x = (lane_width * self.lane) + (lane_width - self.width) // 2
 
 class Obstacle:
     def __init__(self, lane):
@@ -261,8 +272,8 @@ def tela_jogo(TELA, contador):
     while running:
         dt = clock.tick(FPS) / 1000.0  # Delta time em segundos
         
-        # Atualiza a animação do jogador
         player.update_animation(dt)
+        player.update_position()  # Atualiza a posição do jogador
         
         screen.fill((0, 0, 0))  # Limpa a tela
 
