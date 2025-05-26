@@ -6,8 +6,8 @@ from parametros import *
 
 class Player:
     def __init__(self):
-        self.width = PLAYER_WIDTH * 2  # Dobrando o tamanho original
-        self.height = PLAYER_HEIGHT * 2  # Dobrando o tamanho original
+        self.width = PLAYER_WIDTH *2  # Dobrando o tamanho original
+        self.height = PLAYER_HEIGHT *2 # Dobrando o tamanho original
         self.lane = 1
         self.x = (lane_width * self.lane) + (lane_width - self.width) // 2
         self.target_x = self.x  # Posição alvo para o deslizamento
