@@ -26,7 +26,7 @@ LANES = 3
 lane_width = WIDTH // LANES  # Cada pista terá ~233 pixels
 player_y = HEIGHT - 180  # Ajustado para nova altura dos carros
 player_speed = 5
-odd_cerveja = 0.1
+odd_cerveja = 0.15
 # Dimensões dos objetos
 OBSTACLE_WIDTH = 100
 OBSTACLE_HEIGHT = 240
