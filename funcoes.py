@@ -43,6 +43,7 @@ class Player:
     def draw(self, screen):
         # Desenha o sprite na posição x com o tamanho original
         screen.blit(self.frames[self.current_frame], (self.x, self.y))
+
         
     def move(self, direction):
         if direction == "left" and self.lane > 0:
@@ -235,7 +236,7 @@ def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_
     click = pygame.mouse.get_pressed()
     contador += 1
     if botaojogar_rect.collidepoint(mouse) and click[0] == 1:
-        tela_atual = "como jogar "
+        tela_atual = "tela jogo"
         contador = 0
     
     for evento in pygame.event.get():
@@ -415,6 +416,11 @@ def tela_jogo(TELA, contador):
                     contador = 0
 
         player.draw(screen)
+
+        if intangibility:
+            screen.blit(cerveja, cerveja_rect)
+            
+
         draw_hud(screen, meters, current_obstacle_speed, high_score)
 
         pygame.display.flip()
@@ -436,20 +442,20 @@ def carregar_imagem_obstaculo():
         pygame.draw.rect(surf, RED, (0, 0, OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
         return surf
 
-def tela_comojogar(jogo, tela, imagem_comojogar, imagem_rect):
-    tela.blit(imagem_comojogar, imagem_rect)
-    pygame.display.update()
+# def tela_comojogar(jogo, tela, imagem_comojogar, imagem_rect):
+#     tela.blit(imagem_comojogar, imagem_rect)
+#     pygame.display.update()
     
-    esperando = True
-    while esperando:
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                jogo = False
-                esperando = False
-                return jogo, "tela inicial"
-            if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE:
-                    esperando = False
-                    return jogo, "tela jogo"
+#     esperando = True
+#     while esperando:
+#         for evento in pygame.event.get():
+#             if evento.type == pygame.QUIT:
+#                 jogo = False
+#                 esperando = False
+#                 return jogo, "tela inicial"
+#             if evento.type == pygame.KEYDOWN:
+#                 if evento.key == pygame.K_SPACE:
+#                     esperando = False
+#                     return jogo, "tela jogo"
     
-    return jogo, "tela inicial"
+#     return jogo, "tela inicial"
