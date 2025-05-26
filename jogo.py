@@ -29,6 +29,8 @@ def main():
                 tela_atual,
                 contador
             )
+        elif tela_atual == "como jogar":
+            jogo, tela_atual = tela_comojogar(jogo, TELA_INICIAL, comojogar_imagem)
         elif tela_atual == "tela jogo":
             # Criamos a tela de jogo apenas quando necessário
             TELA_JOGO = pygame.display.set_mode((WIDTH, HEIGHT))

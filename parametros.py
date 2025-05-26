@@ -71,6 +71,10 @@ gameoverimagem = pygame.image.load("gameoverimagem.png")
 gameoverimagem = pygame.transform.scale(gameoverimagem, (400, 350))
 gameoverimagem_rect = gameoverimagem.get_rect(center=(WIDTH/2, 530))
 
+comojogar_imagem = pygame.image.load("Imagemcomojogar.jpg")  
+comojogar_imagem = pygame.transform.scale(comojogar_imagem, (LARGURA, ALTURA))
+comojogar_rect = comojogar_imagem.get_rect()
+
 # Caminhos das imagens dos obstáculos (carros)
 IMAGENS_CARROS = [
     "carroazul.png",

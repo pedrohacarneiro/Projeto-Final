@@ -44,10 +44,6 @@ class Player:
         # Desenha o sprite na posição x com o tamanho original
         screen.blit(self.frames[self.current_frame], (self.x, self.y))
         
-        # Desenha os retângulos coloridos apenas quando intangível
-        if hasattr(self, 'intangibility') and self.intangibility:
-            pygame.draw.rect(screen, (0, 255, 255), (self.x, self.y, self.width, self.height), 4)
-
     def move(self, direction):
         if direction == "left" and self.lane > 0:
             self.lane -= 1
@@ -239,7 +235,7 @@ def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_
     click = pygame.mouse.get_pressed()
     contador += 1
     if botaojogar_rect.collidepoint(mouse) and click[0] == 1:
-        tela_atual = "tela jogo"
+        tela_atual = "como jogar "
         contador = 0
     
     for evento in pygame.event.get():
@@ -399,7 +395,7 @@ def tela_jogo(TELA, contador):
                     som_cerveja.play()
                     super_powers.remove(power)
                     intangibility = True
-                    intangibility_timer = 180
+                    intangibility_timer = 360
         if intangibility:
             intangibility_timer -= 1
             if intangibility_timer <= 0:
@@ -419,8 +415,6 @@ def tela_jogo(TELA, contador):
                     contador = 0
 
         player.draw(screen)
-        if intangibility:
-            pygame.draw.rect(screen, (0, 255, 255), (player.x, player.y, player.width, player.height), 4)
         draw_hud(screen, meters, current_obstacle_speed, high_score)
 
         pygame.display.flip()
@@ -441,3 +435,21 @@ def carregar_imagem_obstaculo():
         surf = pygame.Surface((OBSTACLE_WIDTH, OBSTACLE_HEIGHT), pygame.SRCALPHA)
         pygame.draw.rect(surf, RED, (0, 0, OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
         return surf
+
+def tela_comojogar(jogo, tela, imagem_comojogar, imagem_rect):
+    tela.blit(imagem_comojogar, imagem_rect)
+    pygame.display.update()
+    
+    esperando = True
+    while esperando:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                jogo = False
+                esperando = False
+                return jogo, "tela inicial"
+            if evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_SPACE:
+                    esperando = False
+                    return jogo, "tela jogo"
+    
+    return jogo, "tela inicial"
