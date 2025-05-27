@@ -107,7 +107,7 @@ O jogo foi desenvolvido usando:
 ## 🎬 Vídeo de Demonstração
 
 Assista a uma demonstração rápida do jogo funcionando:  
-👉 [LINK DO VÍDEO AQUI]
+👉 [(https://youtu.be/jqsvDGq508E)]
 
 
 ---
