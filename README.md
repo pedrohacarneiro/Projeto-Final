@@ -115,4 +115,10 @@ Assista a uma demonstração rápida do jogo funcionando:
 3. Deepseek
 4. Cursor AI para corrigir defeitos gerados por outras AIs
 5. Inspiracão no jogo Subway Surfers
+
+## Extração de códigos
+1. A classe SuperPower foi majoritariamente (70%) extraída do Deep Seek
+2. A função tela jogo foi 50% extraída do Deep Seek
+3. As demais classes utlilizadas foram feitas pelos integantes, porém com forte auxílio do Deep Seek
+4. As cores e variáveis de tamanho foram extraídas e sugeridas pela IA Cursor, do próprio VS Code
 ---

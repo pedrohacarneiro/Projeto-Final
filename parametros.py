@@ -1,7 +1,7 @@
 import pygame
 
 # Configurações de tela
-WIDTH, HEIGHT = 500, 700  # Largura aumentada para 700
+WIDTH, HEIGHT = 500, 700  #Para a tela do jogo
 LARGURA, ALTURA = 1000, 600  # Para a tela inicial
 
 # Cores
@@ -23,11 +23,11 @@ high_score = 0
 
 # Configurações do jogo principal
 LANES = 3
-lane_width = WIDTH // LANES  # Cada pista terá ~233 pixels
-player_y = HEIGHT - 180  # Ajustado para nova altura dos carros
+lane_width = WIDTH // LANES  
+player_y = HEIGHT - 180  
 player_speed = 5
 odd_cerveja = 0.15
-# Dimensões dos objetos
+
 OBSTACLE_WIDTH = 100
 OBSTACLE_HEIGHT = 240
 PLAYER_WIDTH = 60

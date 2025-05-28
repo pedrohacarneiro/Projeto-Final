@@ -24,20 +24,19 @@ class Player:
         collision_height (float): Altura da área de colisão
     """
     def __init__(self):
-        self.width = PLAYER_WIDTH * 2  # Dobrando o tamanho original
-        self.height = PLAYER_HEIGHT * 2  # Dobrando o tamanho original
+        self.width = PLAYER_WIDTH * 2  
+        self.height = PLAYER_HEIGHT * 2 
         self.lane = 1
         self.x = (lane_width * self.lane) + (lane_width - self.width) // 2
-        self.target_x = self.x  # Posição alvo para o deslizamento
+        self.target_x = self.x  
         self.y = player_y
         self.frames = frames
         self.current_frame = 0
         self.animation_timer = 0
-        self.animation_speed = 0.13  # segundos por frame
-        self.slide_speed = 15  # Velocidade do deslizamento
-        # Área de colisão ainda menor que o sprite
-        self.collision_width = self.width * 0.5  # 50% da largura
-        self.collision_height = self.height * 0.5  # 50% da altura
+        self.animation_speed = 0.13  
+        self.slide_speed = 15  
+        self.collision_width = self.width * 0.5  
+        self.collision_height = self.height * 0.5  
 
     def get_collision_rect(self):
         """
@@ -46,7 +45,6 @@ class Player:
         Returns:
             pygame.Rect: Retângulo de colisão centralizado
         """
-        # Retorna um retângulo de colisão centralizado no sprite
         x = self.x + (self.width - self.collision_width) // 2
         y = self.y + (self.height - self.collision_height) // 2
         return pygame.Rect(x, y, self.collision_width, self.collision_height)
@@ -68,7 +66,6 @@ class Player:
         Atualiza a posição horizontal do jogador para criar movimento suave.
         Move o jogador em direção à posição alvo (target_x).
         """
-        # Atualiza a posição x para criar o efeito de deslizamento
         if self.x < self.target_x:
             self.x = min(self.x + self.slide_speed, self.target_x)
         elif self.x > self.target_x:
@@ -81,10 +78,9 @@ class Player:
         Args:
             screen (pygame.Surface): Superfície onde o jogador será desenhado
         """
-        # Desenha o sprite na posição x com o tamanho original
         screen.blit(self.frames[self.current_frame], (self.x, self.y))
 
-        
+
     def move(self, direction):
         """
         Move o jogador para a esquerda ou direita.
@@ -115,15 +111,12 @@ class Obstacle:
         self.lane = lane
         self.image = carregar_imagem_obstaculo()
         
-        # Calcula dimensões mantendo proporção
         img_width, img_height = self.image.get_size()
         aspect_ratio = img_width / img_height
         
-        # Define altura fixa e calcula largura proporcional
         self.height = OBSTACLE_HEIGHT
         self.width = int(self.height * aspect_ratio)
         
-        # Ajusta se for muito largo
         if self.width > lane_width - 20:
             self.width = lane_width - 20
             self.height = int(self.width / aspect_ratio)
@@ -236,6 +229,7 @@ class SuperPower:
         self.y += speed
         return self.y > HEIGHT
 
+
 class BackgroundManager:
     """
     Classe que gerencia o fundo dinâmico do jogo.
@@ -284,17 +278,14 @@ class BackgroundManager:
         self.current_y += self.speed
         self.next_y += self.speed
 
-        # Quando o fundo atual sair completamente da tela:
         if self.current_y >= HEIGHT:
-            # Reposiciona o atual para ocupar o lugar do próximo
             self.current_bg = self.next_bg
             self.current_bg_index = self.next_bg_index
             self.current_y = self.next_y
 
-            # Define o novo próximo fundo, acima da tela
             self.next_bg_index = self.get_next_random_index(self.current_bg_index)
             self.next_bg = pygame.transform.scale(self.images[self.next_bg_index], (int(WIDTH), int(HEIGHT)))
-            self.next_y = self.current_y - HEIGHT  # Agora sim, novo fundo acima
+            self.next_y = self.current_y - HEIGHT 
             
     def draw(self, screen):
         """
@@ -494,7 +485,7 @@ def tela_jogo(TELA, contador):
     
     super_powers = []
     power_timer = 0
-    power_cooldown = 0  # New variable for power spawn cooldown
+    power_cooldown = 0  
     intangibility = False
     intangibility_end_time = 0
 
@@ -502,21 +493,17 @@ def tela_jogo(TELA, contador):
     
     if contador == 0:
         pygame.mixer.music.load("trilha.mp3")
-        pygame.mixer.music.play(loops=-1)  # Loop infinito
-    
+        pygame.mixer.music.play(loops=-1)  
     contador += 1
     
     running = True
     while running:
-        dt = clock.tick(FPS) / 1000.0  # Delta time em segundos
+        dt = clock.tick(FPS) / 1000.0  
         
         player.update_animation(dt)
-        player.update_position()  # Atualiza a posição do jogador
-        
-        screen.fill((0, 0, 0))  # Limpa a tela
+        player.update_position()  
+        screen.fill((0, 0, 0)) 
 
-        
-        # Atualiza e desenha o fundo
         bg_manager.speed = current_obstacle_speed * 0.5
         bg_manager.update()
         bg_manager.draw(screen)
@@ -559,17 +546,14 @@ def tela_jogo(TELA, contador):
 
             for lane in range(LANES):
                 lane_is_clear = True
-                # Check for obstacles
                 for obs in obstacles:
                     if obs.lane == lane and obs.y < COIN_SIZE * 2:
                         lane_is_clear = False
                         break
-                # Check for coins
                 for coin in coins:
                     if coin.lane == lane and coin.y < COIN_SIZE * 2:
                         lane_is_clear = False
                         break
-                # Check for powers
                 for power in super_powers:
                     if power.lane == lane and power.y < COIN_SIZE * 2:
                         lane_is_clear = False
@@ -581,15 +565,12 @@ def tela_jogo(TELA, contador):
                 coins.append(Coin(random.choice(free_lanes)))
                 coin_timer = 0
 
-            # Spawn power in a different lane than coins
             if random.random() < odd_cerveja and free_lanes and power_cooldown <= 0:
-                # Remove lanes that have coins
                 power_free_lanes = [lane for lane in free_lanes if not any(coin.lane == lane for coin in coins)]
                 if power_free_lanes:
                     super_powers.append(SuperPower(random.choice(power_free_lanes)))
-                    power_cooldown = 1200  # 20 seconds * 60 FPS = 1200 frames
-
-        # Update power cooldown
+                    power_cooldown = 1200  
+        
         if power_cooldown > 0:
             power_cooldown -= 1
 

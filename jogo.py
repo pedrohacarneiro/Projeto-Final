@@ -8,7 +8,6 @@ def main():
     jogo = True
     tela_atual = "tela inicial"
 
-    # Telas - cada uma com suas próprias dimensões
     TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
     pygame.display.set_caption("Springfield Surfers")
 
@@ -18,7 +17,7 @@ def main():
         if tela_atual == "tela inicial":
             jogo, tela_atual,contador = tela_inicial(
                 jogo, 
-                TELA_INICIAL,  # Usando apenas TELA_INICIAL aqui
+                TELA_INICIAL, 
                 fundo, 
                 titulo, 
                 titulo_rect, 
@@ -32,10 +31,8 @@ def main():
         elif tela_atual == "como jogar":
             jogo, tela_atual = tela_comojogar(jogo, TELA_INICIAL, comojogar_imagem, comojogar_rect)
         elif tela_atual == "tela jogo":
-            # Criamos a tela de jogo apenas quando necessário
             TELA_JOGO = pygame.display.set_mode((WIDTH, HEIGHT))
             jogo, tela_atual,contador = tela_jogo(TELA_JOGO,contador)
-            # Quando sair do jogo, voltamos para a tela inicial
             if tela_atual == "tela inicial":
                 TELA_INICIAL = pygame.display.set_mode((LARGURA, ALTURA))
 
