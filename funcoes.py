@@ -5,6 +5,24 @@ from parametros import *
 
 
 class Player:
+    """
+    Classe que representa o jogador (Bart Simpson) no jogo.
+    
+    Attributes:
+        width (int): Largura do sprite do jogador
+        height (int): Altura do sprite do jogador
+        lane (int): Faixa atual do jogador (0-2)
+        x (int): Posição horizontal atual
+        target_x (int): Posição horizontal alvo para movimento suave
+        y (int): Posição vertical fixa
+        frames (list): Lista de frames da animação
+        current_frame (int): Frame atual da animação
+        animation_timer (float): Timer para controle da animação
+        animation_speed (float): Velocidade da animação em segundos por frame
+        slide_speed (int): Velocidade do deslizamento lateral
+        collision_width (float): Largura da área de colisão
+        collision_height (float): Altura da área de colisão
+    """
     def __init__(self):
         self.width = PLAYER_WIDTH * 2  # Dobrando o tamanho original
         self.height = PLAYER_HEIGHT * 2  # Dobrando o tamanho original
@@ -22,18 +40,34 @@ class Player:
         self.collision_height = self.height * 0.5  # 50% da altura
 
     def get_collision_rect(self):
+        """
+        Retorna o retângulo de colisão centralizado no sprite do jogador.
+        
+        Returns:
+            pygame.Rect: Retângulo de colisão centralizado
+        """
         # Retorna um retângulo de colisão centralizado no sprite
         x = self.x + (self.width - self.collision_width) // 2
         y = self.y + (self.height - self.collision_height) // 2
         return pygame.Rect(x, y, self.collision_width, self.collision_height)
 
     def update_animation(self, dt):
+        """
+        Atualiza a animação do jogador baseado no tempo delta.
+        
+        Args:
+            dt (float): Tempo delta em segundos desde o último frame
+        """
         self.animation_timer += dt
         if self.animation_timer >= self.animation_speed:
             self.animation_timer = 0
             self.current_frame = (self.current_frame + 1) % len(self.frames)
 
     def update_position(self):
+        """
+        Atualiza a posição horizontal do jogador para criar movimento suave.
+        Move o jogador em direção à posição alvo (target_x).
+        """
         # Atualiza a posição x para criar o efeito de deslizamento
         if self.x < self.target_x:
             self.x = min(self.x + self.slide_speed, self.target_x)
@@ -41,11 +75,23 @@ class Player:
             self.x = max(self.x - self.slide_speed, self.target_x)
 
     def draw(self, screen):
+        """
+        Desenha o sprite do jogador na tela.
+        
+        Args:
+            screen (pygame.Surface): Superfície onde o jogador será desenhado
+        """
         # Desenha o sprite na posição x com o tamanho original
         screen.blit(self.frames[self.current_frame], (self.x, self.y))
 
         
     def move(self, direction):
+        """
+        Move o jogador para a esquerda ou direita.
+        
+        Args:
+            direction (str): Direção do movimento ("left" ou "right")
+        """
         if direction == "left" and self.lane > 0:
             self.lane -= 1
             self.target_x = (lane_width * self.lane) + (lane_width - self.width) // 2
@@ -54,6 +100,17 @@ class Player:
             self.target_x = (lane_width * self.lane) + (lane_width - self.width) // 2
 
 class Obstacle:
+    """
+    Classe que representa os obstáculos (carros) no jogo.
+    
+    Attributes:
+        lane (int): Faixa onde o obstáculo está
+        image (pygame.Surface): Imagem do obstáculo
+        width (int): Largura do obstáculo
+        height (int): Altura do obstáculo
+        x (int): Posição horizontal
+        y (int): Posição vertical
+    """
     def __init__(self, lane):
         self.lane = lane
         self.image = carregar_imagem_obstaculo()
@@ -76,13 +133,38 @@ class Obstacle:
         self.y = -self.height
 
     def draw(self, screen):
+        """
+        Desenha o obstáculo na tela.
+        
+        Args:
+            screen (pygame.Surface): Superfície onde o obstáculo será desenhado
+        """
         screen.blit(self.image, (self.x, self.y))
 
     def update(self, speed):
+        """
+        Atualiza a posição do obstáculo.
+        
+        Args:
+            speed (int): Velocidade de movimento do obstáculo
+            
+        Returns:
+            bool: True se o obstáculo saiu da tela, False caso contrário
+        """
         self.y += speed
         return self.y > HEIGHT
 
 class Coin:
+    """
+    Classe que representa as moedas (rosquinhas) coletáveis no jogo.
+    
+    Attributes:
+        width (int): Largura da moeda
+        height (int): Altura da moeda
+        lane (int): Faixa onde a moeda está
+        x (int): Posição horizontal
+        y (int): Posição vertical
+    """
     def __init__(self, lane):
         self.width = COIN_SIZE
         self.height = COIN_SIZE
@@ -91,13 +173,39 @@ class Coin:
         self.y = -self.height
 
     def draw(self, screen, coin_img):
+        """
+        Desenha a moeda na tela.
+        
+        Args:
+            screen (pygame.Surface): Superfície onde a moeda será desenhada
+            coin_img (pygame.Surface): Imagem da moeda
+        """
         screen.blit(coin_img, (self.x, self.y))
 
     def update(self, speed):
+        """
+        Atualiza a posição da moeda.
+        
+        Args:
+            speed (int): Velocidade de movimento da moeda
+            
+        Returns:
+            bool: True se a moeda saiu da tela, False caso contrário
+        """
         self.y += speed
         return self.y > HEIGHT
 
 class SuperPower:
+    """
+    Classe que representa os power-ups (cervejas) no jogo.
+    
+    Attributes:
+        width (int): Largura do power-up
+        height (int): Altura do power-up
+        lane (int): Faixa onde o power-up está
+        x (int): Posição horizontal
+        y (int): Posição vertical
+    """
     def __init__(self, lane):
         self.width = COIN_SIZE 
         self.height = COIN_SIZE
@@ -106,13 +214,42 @@ class SuperPower:
         self.y = -self.height
 
     def draw(self, screen, cerveja_img):
+        """
+        Desenha o power-up na tela.
+        
+        Args:
+            screen (pygame.Surface): Superfície onde o power-up será desenhado
+            cerveja_img (pygame.Surface): Imagem do power-up
+        """
         screen.blit(cerveja_img, (self.x, self.y))
 
     def update(self, speed):
+        """
+        Atualiza a posição do power-up.
+        
+        Args:
+            speed (int): Velocidade de movimento do power-up
+            
+        Returns:
+            bool: True se o power-up saiu da tela, False caso contrário
+        """
         self.y += speed
         return self.y > HEIGHT
 
 class BackgroundManager:
+    """
+    Classe que gerencia o fundo dinâmico do jogo.
+    
+    Attributes:
+        images (list): Lista de imagens de fundo
+        current_bg_index (int): Índice do fundo atual
+        next_bg_index (int): Índice do próximo fundo
+        current_bg (pygame.Surface): Imagem do fundo atual
+        next_bg (pygame.Surface): Imagem do próximo fundo
+        current_y (int): Posição vertical do fundo atual
+        next_y (int): Posição vertical do próximo fundo
+        speed (int): Velocidade de rolagem do fundo
+    """
     def __init__(self):
         self.images = [pygame.image.load(img).convert_alpha() for img in IMAGENS_FUNDOS]
         self.current_bg_index = random.randint(0, len(self.images) - 1)
@@ -126,12 +263,24 @@ class BackgroundManager:
     
         
     def get_next_random_index(self, current_index):
+        """
+        Retorna um índice aleatório diferente do atual para o próximo fundo.
+        
+        Args:
+            current_index (int): Índice do fundo atual
+            
+        Returns:
+            int: Índice do próximo fundo
+        """
         next_index = random.randint(0, len(self.images) - 1)
         while next_index == current_index and len(self.images) > 1:
             next_index = random.randint(0, len(self.images) - 1)
         return next_index
         
     def update(self):
+        """
+        Atualiza as posições dos fundos e gerencia a transição entre eles.
+        """
         self.current_y += self.speed
         self.next_y += self.speed
 
@@ -148,17 +297,42 @@ class BackgroundManager:
             self.next_y = self.current_y - HEIGHT  # Agora sim, novo fundo acima
             
     def draw(self, screen):
+        """
+        Desenha os fundos na tela.
+        
+        Args:
+            screen (pygame.Surface): Superfície onde os fundos serão desenhados
+        """
         screen.blit(self.current_bg, (0, int(self.current_y)))
         screen.blit(self.next_bg, (0, int(self.next_y)))
 
 
 def is_position_free(lane, objects):
+    """
+    Verifica se uma faixa está livre para spawn de objetos.
+    
+    Args:
+        lane (int): Faixa a ser verificada
+        objects (list): Lista de objetos para verificar colisão
+        
+    Returns:
+        bool: True se a faixa está livre, False caso contrário
+    """
     for obj in objects:
         if obj.lane == lane and obj.y > -obj.height:
             return False
     return True
 
 def draw_hud(screen, meters, speed, high_score):
+    """
+    Desenha o HUD (Heads-Up Display) na tela.
+    
+    Args:
+        screen (pygame.Surface): Superfície onde o HUD será desenhado
+        meters (int): Pontuação atual
+        speed (int): Velocidade atual
+        high_score (int): Recorde atual
+    """
     font = pygame.font.SysFont(None, 36)
     
     meter_text = font.render(f"Pontuação: {meters}", True, BLACK)
@@ -172,6 +346,22 @@ def draw_hud(screen, meters, speed, high_score):
     screen.blit(speed_text, (10, 50))
     
 def draw_button(screen, text, x, y, width, height, inactive_color, active_color):
+    """
+    Desenha um botão interativo na tela.
+    
+    Args:
+        screen (pygame.Surface): Superfície onde o botão será desenhado
+        text (str): Texto do botão
+        x (int): Posição horizontal
+        y (int): Posição vertical
+        width (int): Largura do botão
+        height (int): Altura do botão
+        inactive_color (tuple): Cor do botão quando não selecionado
+        active_color (tuple): Cor do botão quando selecionado
+        
+    Returns:
+        bool: True se o botão foi clicado, False caso contrário
+    """
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
 
@@ -189,6 +379,17 @@ def draw_button(screen, text, x, y, width, height, inactive_color, active_color)
     return False
 
 def game_over_screen(screen, final_meters, high_score):
+    """
+    Exibe a tela de Game Over.
+    
+    Args:
+        screen (pygame.Surface): Superfície onde a tela será desenhada
+        final_meters (int): Pontuação final
+        high_score (int): Recorde atual
+        
+    Returns:
+        bool: True se o jogador quer reiniciar, False caso contrário
+    """
     screen.fill(VERDE_FINAL)
 
     screen.blit(gameoverimagem, gameoverimagem_rect)
@@ -223,6 +424,25 @@ def game_over_screen(screen, final_meters, high_score):
     return True
 
 def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_rect, botaojogar, botaojogar_rect, tela_atual, contador):
+    """
+    Gerencia a tela inicial do jogo.
+    
+    Args:
+        jogo (bool): Estado do jogo
+        TELA (pygame.Surface): Superfície da tela
+        fundo (pygame.Surface): Imagem de fundo
+        titulo (pygame.Surface): Imagem do título
+        titulo_rect (pygame.Rect): Retângulo do título
+        personagem (pygame.Surface): Imagem do personagem
+        personagem_rect (pygame.Rect): Retângulo do personagem
+        botaojogar (pygame.Surface): Imagem do botão jogar
+        botaojogar_rect (pygame.Rect): Retângulo do botão jogar
+        tela_atual (str): Nome da tela atual
+        contador (int): Contador para controle de música
+        
+    Returns:
+        tuple: (jogo, tela_atual, contador)
+    """
     TELA.blit(fundo, (0, 0))
     TELA.blit(titulo, titulo_rect)
     TELA.blit(personagem, personagem_rect)
@@ -247,6 +467,16 @@ def tela_inicial(jogo, TELA, fundo, titulo, titulo_rect, personagem, personagem_
     return jogo, tela_atual, contador
 
 def tela_jogo(TELA, contador):
+    """
+    Gerencia a tela principal do jogo.
+    
+    Args:
+        TELA (pygame.Surface): Superfície da tela
+        contador (int): Contador para controle de música
+        
+    Returns:
+        tuple: (jogo, tela_atual, contador)
+    """
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     clock = pygame.time.Clock()
     
@@ -432,6 +662,12 @@ def tela_jogo(TELA, contador):
         return True, "tela inicial", contador
     
 def carregar_imagem_obstaculo():
+    """
+    Carrega uma imagem aleatória para o obstáculo.
+    
+    Returns:
+        pygame.Surface: Imagem do obstáculo ou uma superfície vermelha em caso de erro
+    """
     try:
         caminho_imagem = random.choice(IMAGENS_CARROS)
         imagem = pygame.image.load(caminho_imagem).convert_alpha()
@@ -443,6 +679,18 @@ def carregar_imagem_obstaculo():
         return surf
 
 def tela_comojogar(jogo, tela, imagem_comojogar, imagem_rect):
+    """
+    Gerencia a tela de instruções do jogo.
+    
+    Args:
+        jogo (bool): Estado do jogo
+        tela (pygame.Surface): Superfície da tela
+        imagem_comojogar (pygame.Surface): Imagem com instruções
+        imagem_rect (pygame.Rect): Retângulo da imagem
+        
+    Returns:
+        tuple: (jogo, tela_atual)
+    """
     tela.blit(imagem_comojogar, imagem_rect)
     pygame.display.update()
     

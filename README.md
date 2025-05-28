@@ -113,4 +113,6 @@ Assista a uma demonstração rápida do jogo funcionando:
 1. Integrantes do grupo
 2. Chat GPT para gerar imagens como o Bart
 3. Deepseek
+4. Cursor AI para corrigir defeitos gerados por outras AIs
+5. Inspiracão no jogo Subway Surfers
 ---
