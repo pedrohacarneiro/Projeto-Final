@@ -13,7 +13,6 @@ Um jogo de corrida inspirado em Springfield, onde você controla o Bart Simpson 
 - Colete rosquinhas para aumentar sua pontuação
 - Colete cervejas para ganhar invencibilidade temporária
 
-## 🎯 Mecânicas do Jogo
 
 ## 🎮 Controles
 
@@ -100,7 +99,7 @@ O jogo foi desenvolvido usando:
 2. Instale o Pygame:
    pip install pygame
 3. Execute o jogo:
-   python jogo.py
+   Execute o jogo no arquivo: jogo.py
 
 ---
 
@@ -109,5 +108,9 @@ O jogo foi desenvolvido usando:
 Assista a uma demonstração rápida do jogo funcionando:  
 👉 [(https://youtu.be/jqsvDGq508E)]
 
+## Referencias 
 
+1. Integrantes do grupo
+2. Chat GPT para gerar imagens como o Bart
+3. Deepseek
 ---
